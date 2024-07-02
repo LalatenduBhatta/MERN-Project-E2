@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
     username: { type: String, require: true },
-    fName: { type: String },
+    fName: { type: String, require: true },
     LName: { type: String },
     mobile: { type: String },
     email: { type: String, require: true, unique: true },
@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
         }
     },
     createdIN: { type: Date, default: Date.now },
-    password: { type: String }
+    password: { type: String, require: true }
 })
 
 
