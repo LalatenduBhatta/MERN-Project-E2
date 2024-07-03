@@ -1,5 +1,6 @@
 import userModel from "../model/userModel.js"
 import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
 import { config } from "dotenv";
 config()
 
@@ -23,5 +24,37 @@ export const userSignup = async (req, res) => {
         }
     } catch (err) {
         return res.status(500).send({ error: "Something Went Wrong ", errorMsg: err.message })
+    }
+}
+
+
+export const userLogin = async (req, res) => {
+    try {
+        const { email, password } = req.body
+        if (!email || !password) {
+            return res.status(400).send({ error: "provide all the fields before login" })
+        }
+        else {
+            const response = await userModel.findOne({ email })
+            if (response) {
+                //bcrypt logic
+                let matchPassword = bcrypt.compareSync(password, response.password)
+                if (matchPassword) {
+                    //jwt token logic
+                    const userId = response._id
+                    const token = jwt.sign({ userId }, process.env.JWT_Secret, { expiresIn: "7d" })
+                    res.cookie("auth_token", token, { maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true })
+                    return res.status(200).send({ message: "Login successfull" })
+                }
+                else {
+                    return res.status(401).send({ error: "Password is not matching" })
+                }
+            }
+            else {
+                return res.status(401).send({ error: "user not registerd" })
+            }
+        }
+    } catch (err) {
+        res.status(500).send({ error: "something went wrong", errorMsg: err.message })
     }
 }
