@@ -58,3 +58,48 @@ export const userLogin = async (req, res) => {
         res.status(500).send({ error: "something went wrong", errorMsg: err.message })
     }
 }
+
+export const getUser = async (req, res) => {
+    try {
+        const { userId } = req
+        const userDetails = await userModel.findById(userId).select("-_id -password -__v")
+        if (!userDetails) {
+            return res.status(403).send({ error: "User is not available" })
+        }
+        else return res.status(200).send(userDetails)
+    }
+    catch (err) {
+        res.status(500).send({ error: "something went wrong", errorMsg: err.message })
+    }
+}
+
+export const userLogout = async (req, res) => {
+    try {
+        res.clearCookie("auth_token")
+        return res.status(200).send({ message: "Logout Successfull" })
+    } catch (error) {
+        res.status(500).send({ error: "Something Went Wrong", errMsg: error.message })
+    }
+}
+
+export const updateUser = async (req, res) => {
+    try {
+        const userId = req.userId
+        const data = req.body
+        const response = await userModel.findByIdAndUpdate(userId, { $set: { ...data } })
+            .select("-_id -password -__v")
+        res.status(200).send({ message: "User Details Updated", userData: { response } })
+    } catch (err) {
+        res.status(500).send({ error: "Something went wrong", errorMsg: err.message })
+    }
+}
+export const deleteUser = async (req, res) => {
+    try {
+        const userId = req.userId
+        await userModel.findByIdAndDelete(userId)
+        res.clearCookie("auth_token")
+        res.status(200).send({ message: "User Deleted" })
+    } catch (err) {
+        res.status(500).send({ error: "Something went wrong", errorMsg: err.message })
+    }
+}
