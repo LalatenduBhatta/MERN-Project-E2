@@ -3,6 +3,7 @@ import cors from "cors"
 import { config } from "dotenv"
 import dbConnect from "./db/dbConnect.js"
 import userRouter from "./routers/userRouter.js"
+import { otpRouter } from "./routers/otpRouter.js"
 
 const app = express()
 
@@ -13,6 +14,7 @@ config()
 
 //routers
 app.use("/user", userRouter)
+app.use("/otp", otpRouter)
 
 //PORT and hostname
 const PORT = process.env.PORT

@@ -93,6 +93,7 @@ export const updateUser = async (req, res) => {
         res.status(500).send({ error: "Something went wrong", errorMsg: err.message })
     }
 }
+
 export const deleteUser = async (req, res) => {
     try {
         const userId = req.userId
