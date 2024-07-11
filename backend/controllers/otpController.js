@@ -51,5 +51,27 @@ export const generateOtp = async (req, res) => {
 
 
 export const verifyOtp = async (req, res) => {
-
+    try {
+        const userId = req.userId
+        const user = await userModel.findById(userId)
+        if (!user) {
+            return res.status(400).send({ error: "User Not Found" })
+        } else {
+            let userOtpId = user._id
+            const otpData = await otpModel.findOne({ userId: userOtpId })
+            const now = new Date
+            if (now > otpData.expireAt) {
+                return res.status(400).send({ error: "OTP is expired ,Generate again" })
+            } else {
+                let { userOtp } = req.body
+                if (userOtp === otpData.otp) {
+                    return res.status(200).send({ message: "OTP verified successfully" })
+                } else {
+                    return res.status(400).send({ error: "OTP is not matching try again" })
+                }
+            }
+        }
+    } catch (err) {
+        res.status(500).send({ error: "Something went wrong", errorMessage: err.message })
+    }
 }
