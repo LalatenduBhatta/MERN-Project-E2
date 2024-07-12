@@ -104,3 +104,14 @@ export const deleteUser = async (req, res) => {
         res.status(500).send({ error: "Something went wrong", errorMsg: err.message })
     }
 }
+
+export const chatUsers = async (req, res) => {
+    try {
+        const userId = req.userId
+        const user = await userModel.findById(userId)
+        const chatUsers = await userModel.find({ email: { $ne: user.email } })
+        res.status(200).send({ chatUsers })
+    } catch (err) {
+        res.status(500).send({ error: "Something went Wrong", errorMsg: err.message })
+    }
+}

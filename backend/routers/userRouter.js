@@ -1,5 +1,5 @@
 import express from "express"
-import { deleteUser, getUser, updateUser, userLogin, userLogout, userSignup, } from "../controllers/userController.js"
+import { chatUsers, deleteUser, getUser, updateUser, userLogin, userLogout, userSignup, } from "../controllers/userController.js"
 import { verifyToken } from "../middlewares/tokenVerify.js"
 
 const userRouter = express.Router()
@@ -25,5 +25,7 @@ userRouter.put("/update", verifyToken, updateUser)
 //deleteUser
 userRouter.delete("/delete", verifyToken, deleteUser)
 
+//getTheChatUsers
+userRouter.get("/chat", verifyToken, chatUsers)
 
 export default userRouter

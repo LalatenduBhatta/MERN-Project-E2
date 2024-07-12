@@ -21,5 +21,14 @@ export const sendMsg = async (req, res) => {
 }
 
 export const getMsg = async (req, res) => {
-
+    try {
+        const { receiverId } = req.params
+        const senderId = req.userId
+        const conversation = await conversationModel.findOne({
+            participants: { $all: [senderId, receiverId] }
+        }, { messages: 1, _id: 0 }).populate("messages")
+        res.status(200).send({ messages: conversation.messages })
+    } catch (err) {
+        return res.status(500).send({ error: "Something went Wrong", errorMsg: err.message })
+    }
 }

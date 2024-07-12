@@ -12,7 +12,7 @@ msgRouter.get("/", (req, res) => {
 msgRouter.post("/send/:receiverId", verifyToken, sendMsg)
 
 //get messages API
-msgRouter.get("/get", getMsg)
+msgRouter.get("/get/:receiverId", verifyToken, getMsg)
 
 
 
